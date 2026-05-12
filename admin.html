@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - NontonBokep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0c10;
+            --surface: #1a1c23;
+            --surface-hover: #262933;
+            --primary: #45f3ff;
+            --accent: #ff2a5f;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); }
+        
+        /* Navbar */
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem; background: var(--surface); border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
+        .logo span { color: var(--accent); }
+        
+        .header-actions { display: flex; gap: 1rem; }
+        .btn {
+            background-color: var(--surface-hover); color: var(--text-main);
+            border: 1px solid var(--glass-border); padding: 0.5rem 1rem;
+            border-radius: 6px; cursor: pointer; font-size: 0.875rem; font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn:hover { background-color: rgba(255,255,255,0.1); }
+        .btn-primary { background-color: var(--primary); color: #000; border-color: var(--primary); }
+        .btn-primary:hover { background-color: #00e0fe; }
+        .btn-success { background-color: #22c55e; color: #000; border-color: #22c55e; }
+        .btn-success:hover { background-color: #16a34a; }
+        .btn-danger { background-color: var(--accent); color: white; border: none; }
+        .btn-danger:hover { background-color: #e01b4a; }
+
+        /* Container */
+        .container { padding: 2rem; max-width: 1400px; margin: auto; }
+        
+        /* Controls */
+        .controls { display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center; }
+        .search-input {
+            padding: 0.5rem 1rem; width: 300px; border-radius: 8px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            color: white; outline: none;
+        }
+        .search-input:focus { border-color: var(--primary); }
+
+        /* Table */
+        .table-card {
+            background: var(--surface); border-radius: 12px; border: 1px solid var(--glass-border);
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 1rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); }
+        td { padding: 1rem; border-bottom: 1px solid var(--glass-border); font-size: 0.9rem; }
+        tr:hover { background-color: rgba(255,255,255,0.02); }
+        
+        .thumb-cell { display: flex; align-items: center; gap: 1rem; }
+        .thumb-preview { width: 80px; height: 50px; border-radius: 4px; object-fit: cover; background: #000; }
+        .title-text { font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            justify-content: center; align-items: center; z-index: 100;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface); padding: 2rem; border-radius: 12px;
+            width: 100%; max-width: 600px; border: 1px solid var(--glass-border);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-title { font-size: 1.25rem; font-weight: 600; }
+        .close-btn { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+
+        /* Form */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted); }
+        .form-control {
+            width: 100%; padding: 0.75rem; border-radius: 6px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            color: white; outline: none; font-family: inherit;
+        }
+        .form-control:focus { border-color: var(--primary); }
+        
+        .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; }
+
+        /* Loading Overlay */
+        .loader { text-align: center; padding: 3rem; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">Admin<span>Panel</span></div>
+        <div class="header-actions">
+            <!-- Tombol Tambah dan Download Master -->
+            <button class="btn btn-primary" onclick="openModal()">+ Tambah Video Baru</button>
+            <button class="btn btn-success" onclick="exportDataJS()">⇩ Simpan & Terapkan (Download)</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <div>
+                <h2 style="font-size: 1.25rem;">Database Film</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem;" id="totalCount">Memuat...</p>
+            </div>
+            <input type="text" id="searchInput" class="search-input" placeholder="Cari berdasarkan judul...">
+        </div>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Video</th>
+                        <th>Kategori</th>
+                        <th>Tags</th>
+                        <th>Tanggal</th>
+                        <th style="text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="6" class="loader">Memuat data dari data.js...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Form -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Tambah Video Baru</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="videoForm">
+                <input type="hidden" id="v_id">
+                
+                <div class="form-group">
+                    <label>Judul Video</label>
+                    <input type="text" id="v_title" class="form-control" required placeholder="Contoh: German Amateur...">
+                </div>
+
+                <div class="form-group">
+                    <label>URL Gambar (Thumbnail)</label>
+                    <input type="url" id="v_thumbnail" class="form-control" required placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label>URL Embed Player</label>
+                    <input type="url" id="v_embed" class="form-control" required placeholder="https://streamtape.com/e/...">
+                </div>
+
+                <div class="form-group">
+                    <label>URL Download (Opsional)</label>
+                    <input type="url" id="v_download" class="form-control" placeholder="https://...">
+                </div>
+
+                <div style="display:flex; gap:1rem;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Kategori</label>
+                        <input type="text" id="v_category" class="form-control" required placeholder="Contoh: Amateur">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Tanggal Upload</label>
+                        <input type="date" id="v_date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags (Pisahkan dengan koma)</label>
+                    <input type="text" id="v_tags" class="form-control" placeholder="doggystyle, amateur, hd">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Memuat data.js secara lokal -->
+    <script src="data.js"></script>
+    <script>
+        // localAdminData menyimpan data yang bisa di mutasi di sisi browser
+        let localData = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Cek apakah data.js berhasil diload
+            if(typeof videoData !== 'undefined') {
+                // clone dari original
+                localData = JSON.parse(JSON.stringify(videoData)); 
+                renderTable();
+            } else {
+                document.getElementById('tableBody').innerHTML = 
+                    `<tr><td colspan="6" style="text-align:center;color:red;padding:2rem;">Gagal memuat data.js. Pastikan Anda membuka file ini pada jaringan/host yang sama atau server lokal.</td></tr>`;
+            }
+            
+            // Search Listener
+            document.getElementById('searchInput').addEventListener('input', renderTable);
+            
+            // Form Submit Listener
+            document.getElementById('videoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveFormData();
+            });
+        });
+
+        function renderTable() {
+            const table = document.getElementById('tableBody');
+            const searchTerms = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Filter
+            const filtered = localData.filter(v => 
+                v.title.toLowerCase().includes(searchTerms) || 
+                v.category.toLowerCase().includes(searchTerms)
+            );
+
+            // Sort by ID Descending
+            filtered.sort((a, b) => b.id - a.id);
+
+            document.getElementById('totalCount').innerText = `${localData.length} Video Total (${filtered.length} ditampilkan)`;
+
+            if(filtered.length === 0) {
+                table.innerHTML = `<tr><td colspan="6" class="loader">Tidak ada video yang cocok.</td></tr>`;
+                return;
+            }
+
+            table.innerHTML = filtered.map(v => `
+                <tr>
+                    <td style="color:var(--text-muted)">#${v.id}</td>
+                    <td>
+                        <div class="thumb-cell">
+                            <img src="${v.thumbnail}" class="thumb-preview" alt="Thumb">
+                            <div class="title-text">${v.title}</div>
+                        </div>
+                    </td>
+                    <td>${v.category}</td>
+                    <td><span style="background:rgba(255,255,255,0.1);padding:4px 8px;border-radius:4px;font-size:0.75rem">${(v.tags && v.tags.length > 0) ? v.tags.length + ' tags' : '-'}</span></td>
+                    <td>${v.uploadDate}</td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn" style="margin-right: 0.5rem;" onclick="editVideo(${v.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteVideo(${v.id})">Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // === MODAL & FORM LOGIC === //
+        const modal = document.getElementById('videoModal');
+        
+        function openModal() {
+            document.getElementById('videoForm').reset();
+            document.getElementById('v_id').value = '';
+            document.getElementById('modalTitle').innerText = 'Tambah Video Baru';
+            // Default tanggal hari ini
+            document.getElementById('v_date').value = new Date().toISOString().split('T')[0];
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        function editVideo(id) {
+            const video = localData.find(v => v.id === id);
+            if(!video) return;
+
+            document.getElementById('v_id').value = video.id;
+            document.getElementById('v_title').value = video.title;
+            document.getElementById('v_thumbnail').value = video.thumbnail;
+            document.getElementById('v_embed').value = video.embedUrl;
+            document.getElementById('v_download').value = video.downloadUrl || '';
+            document.getElementById('v_category').value = video.category;
+            document.getElementById('v_date').value = video.uploadDate;
+            document.getElementById('v_tags').value = (video.tags || []).join(', ');
+
+            document.getElementById('modalTitle').innerText = 'Edit Video #' + video.id;
+            modal.classList.add('active');
+        }
+
+        function saveFormData() {
+            const idValue = document.getElementById('v_id').value;
+            const newDoc = {
+                id: idValue ? parseInt(idValue) : Math.max(...localData.map(v => v.id), 0) + 1,
+                title: document.getElementById('v_title').value.trim(),
+                thumbnail: document.getElementById('v_thumbnail').value.trim(),
+                embedUrl: document.getElementById('v_embed').value.trim(),
+                downloadUrl: document.getElementById('v_download').value.trim(),
+                category: document.getElementById('v_category').value.trim(),
+                tags: document.getElementById('v_tags').value.split(',').map(t => t.trim()).filter(t => t),
+                uploadDate: document.getElementById('v_date').value
+            };
+
+            if(idValue) {
+                // Update mode
+                const index = localData.findIndex(v => v.id === newDoc.id);
+                if(index > -1) localData[index] = newDoc;
+            } else {
+                // Create mode
+                localData.push(newDoc);
+            }
+
+            closeModal();
+            renderTable();
+        }
+
+        function deleteVideo(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus video ID ' + id + '?')) {
+                localData = localData.filter(v => v.id !== id);
+                renderTable();
+            }
+        }
+
+        // === EXPORT TO data.js === //
+        function exportDataJS() {
+            // Sort database berdasarkan ID aslinya 
+            localData.sort((a,b) => a.id - b.id);
+            
+            // Format ulang ke string JS valid
+            const jsonString = JSON.stringify(localData, null, 4);
+            const content = `// Video Data - Processed and cleaned\n// Generator: Local Admin Panel\nconst videoData = ${jsonString};`;
+
+            // Membuat Blob dan Auto-Download
+            const blob = new Blob([content], { type: "text/javascript" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "data.js";
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('File data.js berhasil didownload!\n\nLangkah selanjutnya:\n1. Timpa/Replace file data.js lokal Anda yang lama dengan yang baru ini.\n2. Lakukan Deploy ke Vercel agar perubahan terlihat secara online.');
+        }
+
+        // Tutup modal jika klik diluar kotak
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

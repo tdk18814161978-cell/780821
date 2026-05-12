@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="clckd" content="63c9e398525614254da25b04e2e80f41" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="秘密的私厨 - 美食制作视频、家常菜教学与全球风味食谱。">
+    <meta name="keywords" content="美食, 做菜, 食谱, 烹饪, 厨房, 家常菜, 面食, 烘焙">
+    <meta property="og:title" content="秘密的私厨 - 美食制作视频">
+    <meta property="og:description" content="学习家常菜、亚洲菜、西餐、面食和甜点制作。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>秘密的私厨 - 美食制作视频</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo" aria-label="秘密的私厨首页">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-color)">
+                <path d="M4 3h16l-1.8 18H5.8L4 3Z"></path>
+                <path d="M8 3v18"></path>
+                <path d="M16 3v18"></path>
+                <path d="M4.8 8h14.4"></path>
+            </svg>
+            秘密<span>的私厨</span>
+        </a>
+        <div class="search-bar">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="搜索菜谱、食材或菜系...">
+        </div>
+    </header>
+    <main class="container">
+        <nav aria-label="美食分类" class="category-filters" id="categoryFilters"></nav>
+        <section><div class="video-grid" id="videoGrid"></div><nav aria-label="分页导航" class="pagination" id="pagination"></nav></section>
+    </main>
+    <footer style="text-align:center;padding:2rem;color:var(--text-muted);font-size:.8rem;margin-top:2rem;border-top:1px solid var(--glass-border);"><p>&copy; 2026 Tony的厨房. 保留所有权利。</p></footer>
+    <script src="data.js"></script><script src="app.js"></script>
+</body>
+</html>

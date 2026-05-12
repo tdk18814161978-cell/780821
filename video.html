@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tonton video premium di 秘密的私厨.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <title>正在加载... - 秘密的私厨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-color)">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            秘密<span>的私厨</span>
+        </a>
+    </header>
+
+    <main class="container video-player-container">
+        <a href="index.html" class="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            返回首页
+        </a>
+        
+        <!-- Video Player -->
+        <article class="player-wrapper" id="playerArea">
+            <!-- Iframe dimuat melalui app.js -->
+        </article>
+
+        <!-- Video Metadata -->
+        <section class="video-details">
+            <h1 id="videoTitle">正在加载标题...</h1>
+            <div id="videoMeta" class="video-details-meta">
+                <!-- Meta data seperti tanggal dan kategori -->
+            </div>
+            <div id="videoTags" class="tag-list">
+                <!-- Tags video -->
+            </div>
+        </section>
+
+        <!-- Related Videos Section -->
+        <section class="related-videos">
+            <h2 class="section-title">相关推荐</h2>
+            <div class="video-grid" id="relatedGrid">
+                <!-- Video cards related dimuat oleh app.js -->
+            </div>
+        </section>
+    </main>
+    
+    <footer style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; margin-top: 2rem; border-top: 1px solid var(--glass-border);">
+        <p>&copy; 2026 秘密的私厨 Premium Platform.</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
